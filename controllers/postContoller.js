@@ -12,7 +12,7 @@ module.exports.showposts = async function (req, res) {
       .sort([["createdAt", -1]])
       .limit(limit)
       .skip(startindx)
-      .populate("user", "name email _id")
+      .populate("user", "name email _id avatar")
       .populate("likes", "user")
       .populate({
         path: "comment",
