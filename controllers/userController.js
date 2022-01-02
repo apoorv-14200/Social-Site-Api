@@ -1,9 +1,13 @@
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
+const fs = require("fs");
+const path = require("path");
 
 module.exports.createSession = async function (req, res) {
   try {
     res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "*");
+    res.header("Access-Control-Allow-Headers", "*");
     console.log("body", req.body);
     let user = await User.findOne({ email: req.body.email });
     if (!user || user.password != req.body.password) {
@@ -44,6 +48,8 @@ module.exports.signup = async function (req, res) {
   console.log(req.body);
   try {
     res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "*");
+    res.header("Access-Control-Allow-Headers", "*");
     let user = await User.findOne({ email: req.body.email });
     if (user) {
       return res.json(200, {
@@ -87,6 +93,8 @@ module.exports.signup = async function (req, res) {
 module.exports.search = async function (req, res) {
   try {
     res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "*");
+    res.header("Access-Control-Allow-Headers", "*");
     const s = req.query.text;
     const regex = new RegExp(s, "i"); // i for case insensitive
     let users = await User.find({ name: { $regex: regex } }).select({
@@ -113,6 +121,8 @@ module.exports.search = async function (req, res) {
 module.exports.profile = async function (req, res) {
   try {
     res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "*");
+    res.header("Access-Control-Allow-Headers", "*");
     let user = await User.findOne({ _id: req.params.id }).select({
       name: 1,
       _id: 1,
@@ -146,6 +156,8 @@ module.exports.profile = async function (req, res) {
 
 module.exports.edit = async function (req, res) {
   res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "*");
+  res.header("Access-Control-Allow-Headers", "*");
   try {
     console.log(req.body.id);
     if (req.user.id != req.body.id) {
@@ -198,43 +210,50 @@ module.exports.edit = async function (req, res) {
 
 module.exports.editPhoto = async function (req, res) {
   res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "*");
+  res.header("Access-Control-Allow-Headers", "*");
+
   try {
-    console.log(req.body.id);
-    if (req.user.id != req.body.id) {
-      return res.json(200, {
-        message: "You are not authorized to change the profile photo",
-        success: false,
-        error: "Unauthorized User",
-      });
-    }
-    let user = await User.findOne({ _id: req.body.id });
+    // console.log(req.body);
+    // if (req.user.id != req.body.id) {
+    //   return res.json(200, {
+    //     message: "You are not authorized to change the profile photo",
+    //     success: false,
+    //     error: "Unauthorized User",
+    //   });
+    // }
+    let user = await User.findOne({ _id: req.user.id });
     if (user) {
-      User.uploadedAvatar(req, res, function (err) {
+      await User.uploadedAvatar(req, res, function (err) {
         if (err) {
           console.log("Multer error", err);
           return;
         }
+        // console.log(req.file);
         if (req.file) {
           if (user.avatar) {
-            fs.unlinkSync(path.join(__dirname + ".." + user.avatar));
+            fs.unlinkSync(path.join(__dirname + "\\.." + user.avatar));
           }
-          user.avatar = User.avatarPath + "/" + req.file.filename;
+          user.avatar = User.avatarPath + "\\" + req.file.filename;
+          console.log("AVatar", user.avatar);
         }
         user.save();
       });
-      return res.json(200, {
-        message: "Succesfully updated Profile photo",
-        data: {
-          user: {
-            name: user.name,
-            _id: user._id,
-            email: user.email,
-            avatar: user.avatar,
+      setTimeout(() => {
+        return res.json(200, {
+          message: "Succesfully updated Profile photo",
+          data: {
+            user: {
+              name: user.name,
+              _id: user._id,
+              email: user.email,
+              avatar: user.avatar,
+            },
+            token: jwt.sign(user.toJSON(), "secret", { expiresIn: "1000000" }),
           },
-          token: jwt.sign(user.toJSON(), "secret", { expiresIn: "1000000" }),
-        },
-        success: true,
-      });
+          success: true,
+        });
+      }, 200);
     } else {
       return res.json(200, {
         message: "User Not found",
