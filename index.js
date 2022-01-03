@@ -5,21 +5,29 @@ const cors = require("cors");
 const passportjwt = require("./config/passport-jwt-strategy");
 const app = express();
 
+const path = require("path");
+
 app.set("view engine", "ejs");
 app.set("views", "./views");
 app.use(bodyParser.json());
 app.use(express.urlencoded());
 app.use(passport.initialize());
-app.use("/uploads", express.static(__dirname + "/uploads"));
+app.use(express.static(path.join(__dirname, "build")));
 
 const db = require("./config/mongoose");
-app.use(
-  cors({
-    origin: ["https://apoorv-14200.github.io", "http://localhost:3000"],
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: ["https://apoorv-14200.github.io", "http://localhost:4000"],
+//     credentials: true,
+//   })
+// );
+app.use("/uploads", express.static(__dirname + "/uploads"));
 app.use("/api", require("./routes/api"));
+
+app.get("/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
+
 app.get("/", function (req, res) {
   return res.render("home.ejs");
 });
