@@ -236,6 +236,7 @@ module.exports.editPhoto = async function (req, res) {
             avp = avp.replace("\\", "/");
             let fpath = path.join(__dirname, "..", avp).replace("\\", "/");
             fpath = path.normalize(fpath);
+            fpath.replace(/\\/g, "/");
             fs.unlinkSync(fpath);
           }
           user.avatar = User.avatarPath + "\\" + req.file.filename;
