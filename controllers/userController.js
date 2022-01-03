@@ -232,7 +232,9 @@ module.exports.editPhoto = async function (req, res) {
         // console.log(req.file);
         if (req.file) {
           if (user.avatar) {
-            let fpath = path.join(__dirname, "..", user.avatar);
+            let fpath = path
+              .join(__dirname, "..", user.avatar)
+              .replace("\\", "/");
             fs.unlinkSync(fpath);
           }
           user.avatar = User.avatarPath + "\\" + req.file.filename;
