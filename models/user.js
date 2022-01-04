@@ -34,7 +34,9 @@ const userSchema = new mongoose.Schema(
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "..", AVATAR_PATH));
+    let fpath = path.join(__dirname, "..", AVATAR_PATH).replace(/\\/g, "/");
+    fpath = path.normalize(fpath);
+    cb(null, fpath);
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
