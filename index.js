@@ -12,7 +12,6 @@ app.set("views", "./views");
 app.use(bodyParser.json());
 app.use(express.urlencoded());
 app.use(passport.initialize());
-app.use(express.static(path.join(__dirname, "build")));
 
 const db = require("./config/mongoose");
 // app.use(
@@ -23,6 +22,8 @@ const db = require("./config/mongoose");
 // );
 app.use("/uploads", express.static(__dirname + "/uploads"));
 app.use("/api", require("./routes/api"));
+
+app.use(express.static(path.join(__dirname, "build")));
 
 app.get("/*", (req, res) => {
   res.sendFile(path.join(__dirname, "build", "index.html"));
