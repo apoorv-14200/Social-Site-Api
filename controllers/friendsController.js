@@ -3,7 +3,7 @@ const Post = require("../models/post");
 const Comment = require("../models/comment");
 const Friendship = require("../models/friendship");
 const User = require("../models/user");
-
+const Conversation = require("../models/conversation");
 module.exports.createfriendship = async function (req, res) {
   res.header("Access-Control-Allow-Origin", "*");
   try {
@@ -116,6 +116,10 @@ module.exports.remove_friend = async function (req, res) {
     user.save();
     me.save();
     let removed_id = friendship._id;
+    let conversation = Conversation.findOne({ friendship: friendship._id });
+    if (conversation) {
+      conversation.remove();
+    }
     friendship.remove();
     return res.json(200, {
       success: true,

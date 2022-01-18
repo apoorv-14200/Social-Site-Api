@@ -6,9 +6,6 @@ const PostSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    images: {
-      type: String,
-    },
     user: {
       type: mongoose.Schema.Types.ObjectId, //we identify the user whoh post the post by their id
       ref: "User", //refrences to User schema
