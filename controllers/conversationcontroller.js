@@ -17,7 +17,7 @@ module.exports.get_conversation = async function (req, res) {
       populate: [
         {
           path: "user",
-          select: "name email _id",
+          select: "name email _id online",
         },
       ],
     });
@@ -34,7 +34,7 @@ module.exports.get_conversation = async function (req, res) {
       populate: [
         {
           path: "user",
-          select: "name email _id",
+          select: "name email _id online",
         },
       ],
     });

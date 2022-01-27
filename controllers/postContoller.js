@@ -12,7 +12,7 @@ module.exports.showposts = async function (req, res) {
       .sort([["createdAt", -1]])
       .limit(limit)
       .skip(startindx)
-      .populate("user", "name email _id avatar")
+      .populate("user", "name email _id avatar online")
       .populate("likes", "user")
       .populate({
         path: "comment",
@@ -74,7 +74,7 @@ module.exports.createpost = async function (req, res) {
         path: "comment",
         populate: {
           path: "user",
-          select: "name email _id",
+          select: "name email _id online",
         },
       });
     return res.json(200, {

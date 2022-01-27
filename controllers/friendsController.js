@@ -20,8 +20,8 @@ module.exports.createfriendship = async function (req, res) {
         { to_user: req.user._id, from_user: req.query.user_id },
       ],
     })
-      .populate("from_user", "name email _id avatar")
-      .populate("to_user", "name email _id avatar");
+      .populate("from_user", "name email _id avatar online")
+      .populate("to_user", "name email _id avatar online");
     if (friendship) {
       return res.json(200, {
         message: `Already a friend with ${user.name}`,
@@ -47,8 +47,8 @@ module.exports.createfriendship = async function (req, res) {
           { to_user: req.user._id, from_user: req.query.user_id },
         ],
       })
-        .populate("from_user", "name email _id avatar")
-        .populate("to_user", "name email _id avatar");
+        .populate("from_user", "name email _id avatar online")
+        .populate("to_user", "name email _id avatar online");
       return res.json(200, {
         message: `Now you are friend with ${user.name}`,
         success: true,
@@ -72,8 +72,8 @@ module.exports.fetch_friends = async function (req, res) {
     let friendships = await Friendship.find({
       $or: [{ from_user: req.user._id }, { to_user: req.user._id }],
     })
-      .populate("from_user", "name email _id avatar")
-      .populate("to_user", "name email _id avatar");
+      .populate("from_user", "name email _id avatar online")
+      .populate("to_user", "name email _id avatar online");
     return res.json(200, {
       success: true,
       message: "Successfully fetched friends",

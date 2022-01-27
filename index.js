@@ -55,18 +55,23 @@ app.use(passport.initialize());
 const db = require("./config/mongoose");
 app.use(
   cors({
-    origin: ["https://apoorv-14200.github.io", "http://localhost:3000"],
+    origin: [
+      "https://apoorv-14200.github.io",
+      "https://angry-dubinsky-f68135.netlify.app",
+      "http://localhost:3000",
+      "http://localhost:4000",
+    ],
     credentials: true,
   })
 );
-app.use(express.static(path.join(__dirname, "build")));
+// app.use(express.static(path.join(__dirname, "build")));
 
 app.use("/uploads", express.static(__dirname + "/uploads"));
 app.use("/api", require("./routes/api"));
 
-app.use((req, res, next) => {
-  res.sendFile(path.join(__dirname, "..", "build", "index.html"));
-});
+// app.use("*", (req, res, next) => {
+//   res.sendFile(path.join(__dirname, "..", "build", "index.html"));
+// });
 
 let port = process.env.PORT;
 if (port == null || port == "") {
