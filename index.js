@@ -57,7 +57,7 @@ app.use(
   cors({
     origin: [
       "https://apoorv-14200.github.io",
-      "https://angry-dubinsky-f68135.netlify.app",
+      "https://my-friend-circle.netlify.app",
       "http://localhost:3000",
       "http://localhost:4000",
     ],
